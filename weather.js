@@ -55,11 +55,11 @@ async function getForecast(location) {
     let latitude = location.coords.latitude;
     let longitude = location.coords.longitude;
 
-    let responseGrid = await fetch("https://api.weather.gov/points/" + latitude + "," + longitude);
-    let dataGrid = await responseGrid.json();
+    let response = await fetch("https://api.weather.gov/points/" + latitude + "," + longitude);
+    let data = await response.json();
 
     // Get hourly forecast data
-    response = await fetch(dataGrid.properties.forecastHourly);
+    response = await fetch(data.properties.forecastHourly);
     data = await response.json();
 
     data.properties.periods.forEach((period, i) => {
@@ -89,6 +89,27 @@ async function getForecast(location) {
         graphic.src = "https://api.weather.gov" + period.icon;
         var cell = row.insertCell();
         cell.appendChild(graphic);
+    });
+
+    // Get UV forecast data
+    response = await fetch("https://data.epa.gov/efservice/getEnvirofactsUVHourly/LATITUDE/" + latitude + "/LONGITUDE/" + longitude + "/JSON");
+    data = await response.json();
+
+    data.forEach((period, i) => {
+        // Parse out only data for today
+        let today = (new Date()).getDate();
+        if (period.DATE_TIME.slice(4, 6) != today) {
+            return;
+        }
+
+        var table = document.getElementById("uv"); 
+        var row = table.insertRow();
+
+        var cell = row.insertCell();
+        cell.textContent = period.DATE_TIME.slice(-5);
+
+        cell = row.insertCell();
+        cell.textContent = period.UV_VALUE;
     });
 }
 
