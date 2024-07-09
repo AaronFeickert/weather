@@ -135,7 +135,13 @@ async function getUV(latitude, longitude) {
 
         let raw_hour = parseInt(date.slice(12, 14));
         let am_pm = date.slice(15);
-        if (am_pm == 'AM' || (am_pm == 'PM' && raw_hour == 12)) {
+        if (am_pm == 'AM') {
+            if (raw_hour == 12) {
+                this_hour['hour'] = 0;
+            } else {
+                this_hour['hour'] = raw_hour;
+            }
+        } else if (am_pm == 'PM' && raw_hour == 12) {
             this_hour['hour'] = raw_hour;
         } else {
             this_hour['hour'] = raw_hour + 12;
