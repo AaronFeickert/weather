@@ -55,7 +55,7 @@ async function getLiveData() {
     // Get wind speed in miles per hour
     let wind_speed = data.last_ob['windspeed[kt]']
     if (wind_speed === null) {
-        document.getElementById('wind_speed').textContent = 'n/a';
+        document.getElementById('wind_speed').textContent = '-';
     } else {
         document.getElementById('wind_speed').textContent = round(convert_kts_to_mph(wind_speed), 1) + ' mph';
     }
@@ -63,7 +63,7 @@ async function getLiveData() {
     // Get wind direction in degrees
     let wind_direction = data.last_ob['winddirection[deg]']
     if (wind_direction === null) {
-        document.getElementById('wind_direction').textContent = 'n/a';
+        document.getElementById('wind_direction').textContent = '-';
     } else {
         document.getElementById('wind_direction').textContent = wind_direction;
     }
@@ -71,7 +71,7 @@ async function getLiveData() {
     // Get temperature in degrees Fahrenheit
     let temperature = data.last_ob['airtemp[F]']
     if (temperature === null) {
-        document.getElementById('temperature').textContent = 'n/a';
+        document.getElementById('temperature').textContent = '-';
     } else {
         document.getElementById('temperature').textContent = round(temperature, 1) + ' F';
     }
