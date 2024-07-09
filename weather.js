@@ -89,7 +89,7 @@ async function getForecast(latitude, longitude) {
 
     // Store the data for the next half day
     data.properties.periods.forEach((period, i) => {
-        if (i >= 12) {
+        if (i > 12) {
             return;
         }
 
