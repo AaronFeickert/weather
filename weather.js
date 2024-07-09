@@ -185,32 +185,35 @@ async function getLocationSpecificData(location) {
     forecast_weather.forEach((period_weather, _) => {
         let row = table.insertRow();
 
+        // Include the data fields
+        let fields = [
+            period_weather['hour'] + ':00',
+            period_weather['temperature'] + ' F',
+            '-', // default UV index when no data is available
+            period_weather['windSpeed'],
+            period_weather['windDirection'],
+            period_weather['precipitation'] + '%',
+            period_weather['forecast'],
+        ];
+
         // Check the UV forecast (super duper inefficiently)
         forecast_uv.forEach((period_uv, _) => {
             if (matches(period_weather, period_uv)) {
-                // Include the data fields
-                let fields = [
-                    period_weather['hour'] + ':00',
-                    period_weather['temperature'] + ' F',
-                    period_uv['uv'],
-                    period_weather['windSpeed'],
-                    period_weather['windDirection'],
-                    period_weather['precipitation'] + '%',
-                    period_weather['forecast'],
-                ];
-
-                fields.forEach((field, _) => {
-                    var cell = row.insertCell();
-                    cell.textContent = field;
-                });
-
-                // Include the graphic
-                var graphic = document.createElement('img');
-                graphic.src = period_weather['iconURL'];
-                var cell = row.insertCell();
-                cell.appendChild(graphic);
+                fields[2] = period_uv['uv'];
             }
         });
+
+        // Display the data fields
+        fields.forEach((field, _) => {
+            var cell = row.insertCell();
+            cell.textContent = field;
+        });
+
+        // Display the graphic
+        var graphic = document.createElement('img');
+        graphic.src = period_weather['iconURL'];
+        var cell = row.insertCell();
+        cell.appendChild(graphic);
     });
 }
 
