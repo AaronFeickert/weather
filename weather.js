@@ -123,12 +123,6 @@ async function getUV(latitude, longitude) {
 
     // Store the data for today
     data.forEach((period, _) => {
-        // Parse out only data for today
-        let today = (new Date()).getDate();
-        if (period.DATE_TIME.slice(4, 6) != today) {
-            return;
-        }
-
         let this_hour = {};
 
         // Get the time data for this hour
