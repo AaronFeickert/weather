@@ -50,11 +50,8 @@ async function getLiveData() {
     }
 }
 
-async function getForecast(location) {
+async function getForecast(latitude, longitude) {
     // Get grid data
-    let latitude = location.coords.latitude;
-    let longitude = location.coords.longitude;
-
     let response = await fetch("https://api.weather.gov/points/" + latitude + "," + longitude);
     let data = await response.json();
 
@@ -86,11 +83,13 @@ async function getForecast(location) {
 
         // Include a graphic for the weather
         var graphic = document.createElement("img");
-        graphic.src = "https://api.weather.gov" + period.icon;
+        graphic.src = period.icon;
         var cell = row.insertCell();
         cell.appendChild(graphic);
     });
+}
 
+async function getUV(latitude, longitude) {
     // Get UV forecast data
     response = await fetch("https://data.epa.gov/efservice/getEnvirofactsUVHourly/LATITUDE/" + latitude + "/LONGITUDE/" + longitude + "/JSON");
     data = await response.json();
@@ -113,5 +112,21 @@ async function getForecast(location) {
     });
 }
 
-// Get the forecast once we have a location
-navigator.geolocation.getCurrentPosition(getForecast);
+async function getLocationSpecificData(location) {
+    let latitude = location.coords.latitude;
+    let longitude = location.coords.longitude;
+
+    // Get weather forecast
+    getForecast(latitude, longitude);
+
+    // Get UV forecast
+    getUV(latitude, longitude);
+}
+
+async function getAllData() {
+    // Get the forecast once we have a location
+    navigator.geolocation.getCurrentPosition(getLocationSpecificData);
+
+    // Get the live data, which does not require a location
+    getLiveData();
+}
