@@ -44,7 +44,7 @@ let forecast_uv = [];
 // Get live weather data from MSP and display it
 async function getLiveData() {
     // Get the data
-    let response = await fetch('https://mesonet.agron.iastate.edu/json/current.py?network=MN_ASOS&station=MSP');
+    let response = await fetch('https://mesonet.agron.iastate.edu/json/current.py?network=MN_ASOS&station=MSP', { cache: 'reload' });
     let data = await response.json();
 
     // Get the observation age in minutes
@@ -79,12 +79,12 @@ async function getLiveData() {
 
 // Get weather forecast data for the current location
 async function getForecast(latitude, longitude) {
-    // Get grid data
+    // Get grid data (caching is fine here)
     let response = await fetch('https://api.weather.gov/points/' + latitude + ',' + longitude);
     let data = await response.json();
 
     // Get hourly forecast data
-    response = await fetch(data.properties.forecastHourly);
+    response = await fetch(data.properties.forecastHourly, { cache: 'reload' });
     data = await response.json();
 
     // Store the data for the next half day
@@ -118,7 +118,7 @@ async function getForecast(latitude, longitude) {
 // Get UV forecast data for the current location
 async function getUV(latitude, longitude) {
     // Get UV forecast data
-    response = await fetch('https://data.epa.gov/efservice/getEnvirofactsUVHourly/LATITUDE/' + latitude + '/LONGITUDE/' + longitude + '/JSON');
+    response = await fetch('https://data.epa.gov/efservice/getEnvirofactsUVHourly/LATITUDE/' + latitude + '/LONGITUDE/' + longitude + '/JSON', { cache: 'reload' });
     data = await response.json();
 
     // Store the data for today
