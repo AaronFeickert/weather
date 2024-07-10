@@ -50,8 +50,15 @@ async function getLiveData() {
     let response = await fetch('https://corsproxy.io/?' + encodeURIComponent('https://online.saiawos.com/MSP/ios/webgetjson.php?buster=' + (new Date()).getTime()), { cache: 'reload' });
     let data = await response.json();
 
-    // Get the observation age in minutes
-    document.getElementById('time').textContent = data['utc'];
+    // Get the observation time
+    if (
+        data['utc'].slice(0, data['utc'].indexOf(':')) == (new Date()).getHours() &&
+        data['utc'].slice(data['utc'].indexOf(':') + 1, data['utc'].indexOf(' ')) == (new Date()).getMinutes()
+    ) {
+        document.getElementById('time').textContent = 'now';
+    } else {
+        document.getElementById('time').textContent = data['utc'];
+    }
 
     // Get wind speed in miles per hour
     let wind_speed = data['wndSpd'];
