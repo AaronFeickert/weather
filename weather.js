@@ -37,6 +37,9 @@ function monthToInt(m) {
     return months[m];
 }
 
+// Location data
+let currentLocation;
+
 // Forecast data
 let forecast_weather = [];
 let forecast_uv = [];
@@ -67,10 +70,13 @@ async function getLiveData() {
     // Get humidity in percent
     let humidity = data['relHum']
     document.getElementById('humidity').textContent = humidity + '%';
+
+    // Update the data twice a minute
+    setTimeout(getLiveData, 30 * 1000);
 }
 
 // Get weather forecast data for the current location
-async function getForecast(latitude, longitude) {
+async function getWeather(latitude, longitude) {
     // Get grid data (caching is fine here)
     let response = await fetch('https://api.weather.gov/points/' + latitude + ',' + longitude);
     let data = await response.json();
@@ -162,18 +168,23 @@ function matches(weather, uv) {
 }
 
 // Get and display all location-specific data
-async function getLocationSpecificData(location) {
-    let latitude = location.coords.latitude;
-    let longitude = location.coords.longitude;
+async function getForecast() {
+    let latitude = currentLocation.coords.latitude;
+    let longitude = currentLocation.coords.longitude;
 
     // Get weather and UV forecasts in parallel
     await Promise.all([
-        getForecast(latitude, longitude),
+        getWeather(latitude, longitude),
         getUV(latitude, longitude)
     ]);
 
-    // Combine the data, anchored to the weather forecast
+    // Clear the table
     let table = document.getElementById('forecast'); 
+    while (table.firstChild) {
+        table.firstChild.remove();
+    }
+
+    // Combine the data, anchored to the weather forecast
     forecast_weather.forEach((period_weather, _) => {
         let row = table.insertRow();
 
@@ -207,11 +218,21 @@ async function getLocationSpecificData(location) {
         var cell = row.insertCell();
         cell.appendChild(graphic);
     });
+
+    // Clear the data
+    forecast_weather = [];
+    forecast_uv = [];
+
+    // Update the data every five minutes
+    setTimeout(getForecast, 5 * 60 * 1000);
 }
 
 async function getAllData() {
     // Get the forecast once we have a location
-    navigator.geolocation.getCurrentPosition(getLocationSpecificData);
+    navigator.geolocation.getCurrentPosition((location) => {
+        currentLocation = location;
+        getForecast();
+    });
 
     // Get the live data, which does not require a location
     getLiveData();
