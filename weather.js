@@ -81,6 +81,9 @@ async function getWeather(latitude, longitude) {
     let response = await fetch('https://api.weather.gov/points/' + latitude + ',' + longitude);
     let data = await response.json();
 
+    // Display the location name
+    document.getElementById('forecast_caption').textContent = 'Forecast weather (' + data.properties.relativeLocation.properties.city + ')';
+
     // Get hourly forecast data
     response = await fetch(data.properties.forecastHourly, { cache: 'reload' });
     data = await response.json();
