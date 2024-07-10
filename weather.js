@@ -63,7 +63,7 @@ async function getLiveData() {
 
     // Get temperature in degrees Fahrenheit
     let temperature = data['temp'];
-    document.getElementById('temperature').textContent = temperature;
+    document.getElementById('temperature').textContent = temperature.substring(0, temperature.indexOf('(')) + ' F';
     let apparent = data['heatIndex'] != "N/A" ? data['heatIndex'] : data['windChill'];
     document.getElementById('apparent').textContent = apparent;
 
