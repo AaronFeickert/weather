@@ -44,37 +44,29 @@ let forecast_uv = [];
 // Get live weather data from MSP and display it
 async function getLiveData() {
     // Get the data
-    let response = await fetch('https://mesonet.agron.iastate.edu/json/current.py?network=MN_ASOS&station=MSP', { cache: 'reload' });
+    let response = await fetch('https://corsproxy.io/?' + encodeURIComponent('https://online.saiawos.com/MSP/ios/webgetjson.php?buster=' + (new Date()).getTime()), { cache: 'reload' });
     let data = await response.json();
 
     // Get the observation age in minutes
-    let now = new Date();
-    let observation_time = new Date(data.last_ob.utc_valid);
-    document.getElementById('age').textContent = Math.round((now - observation_time) / 1000 / 60) + ' min';
+    document.getElementById('time').textContent = data['utc'];
 
     // Get wind speed in miles per hour
-    let wind_speed = data.last_ob['windspeed[kt]']
-    if (wind_speed === null) {
-        document.getElementById('wind_speed').textContent = '-';
-    } else {
-        document.getElementById('wind_speed').textContent = round(convert_kts_to_mph(wind_speed), 1) + ' mph';
-    }
+    let wind_speed = data['wndSpd'];
+    document.getElementById('wind_speed').textContent = round(convert_kts_to_mph(wind_speed), 1) + ' mph';
     
     // Get wind direction in degrees
-    let wind_direction = data.last_ob['winddirection[deg]']
-    if (wind_direction === null) {
-        document.getElementById('wind_direction').textContent = '-';
-    } else {
-        document.getElementById('wind_direction').textContent = wind_direction;
-    }
+    let wind_direction = data['wndDir']
+    document.getElementById('wind_direction').textContent = wind_direction;
 
     // Get temperature in degrees Fahrenheit
-    let temperature = data.last_ob['airtemp[F]']
-    if (temperature === null) {
-        document.getElementById('temperature').textContent = '-';
-    } else {
-        document.getElementById('temperature').textContent = round(temperature, 1) + ' F';
-    }
+    let temperature = data['temp'];
+    document.getElementById('temperature').textContent = temperature;
+    let apparent = data['heatIndex'] != "N/A" ? data['heatIndex'] : data['windChill'];
+    document.getElementById('apparent').textContent = apparent;
+
+    // Get humidity in percent
+    let humidity = data['relHum']
+    document.getElementById('humidity').textContent = humidity + '%';
 }
 
 // Get weather forecast data for the current location
