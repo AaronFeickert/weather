@@ -40,7 +40,7 @@ function monthToInt(m) {
 // Convert a UV index to a color
 function uvToColor(uv) {
     // None
-    if (uv == 0) {
+    if (uv == 0 || uv == "-") {
         return "#FFFFFF"; // white
     }
     // Low
