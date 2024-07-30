@@ -37,6 +37,28 @@ function monthToInt(m) {
     return months[m];
 }
 
+// Convert a UV index to a color
+function uvToColor(uv) {
+    // None
+    if (uv == 0) {
+        return "#FFFFFF"; // white
+    }
+    // Low
+    if (uv <= 2) {
+        return "#55AA55"; // green
+    }
+    // Moderate
+    if (uv <= 5) {
+        return "#D49A6A"; // orange
+    }
+    // High
+    if (uv <= 7) {
+        return "#D46A6A"; // red
+    }
+    // Very high, extreme
+    return "#407F7F"; // blue
+}
+
 // Location data
 let currentLocation;
 
@@ -217,9 +239,15 @@ async function getForecast() {
         });
 
         // Display the data fields
-        fields.forEach((field, _) => {
+        fields.forEach((field, i) => {
             var cell = row.insertCell();
             cell.textContent = field;
+            cell.style.textAlign = 'center';
+
+            // For UV, color the cell
+            if (i == 2) {
+                cell.style.backgroundColor = uvToColor(field);
+            }
         });
 
         // Display the graphic
