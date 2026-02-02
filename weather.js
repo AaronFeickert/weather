@@ -69,7 +69,7 @@ let forecast_uv = [];
 // Get live weather data from MSP and display it
 async function getLiveData() {
     // Get the data
-    let response = await fetch('https://corsproxy.io/?' + encodeURIComponent('https://online.saiawos.com/MSP/ios/webgetjson.php?buster=' + (new Date()).getTime()), { cache: 'reload' });
+    let response = await fetch('https://corsproxy.io/?' + encodeURIComponent('http://online.saiawos.com/MSP/ios/webgetjson.php?buster=' + (new Date()).getTime()), { cache: 'reload' });
     let data = await response.json();
 
     // Get the observation time
